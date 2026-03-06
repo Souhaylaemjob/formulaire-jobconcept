@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JOB CONCEPT — Dossier d'inscription intérimaire</title>
+
+  <!-- jsPDF + AutoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.3/jspdf.plugin.autotable.min.js" crossorigin="anonymous"></script>
+
+  <style>
+    :root{
+      --accent:#d91c23;
+      --bg:#f4f6f8;
+      --card:#ffffff;
+      --muted:#667085;
+      --border:#e6e8ec;
+      --shadow:0 10px 30px rgba(16,24,40,.10);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family: Arial, sans-serif;
+      background:var(--bg);
+      margin:0;
+      padding:24px;
+      color:#101828;
+    }
+    .container{
+      max-width: 980px;
+      margin: 24px auto;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .header{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      border-bottom:1px solid var(--border);
+      padding-bottom:14px;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      min-width:260px;
+    }
+    .brand img{height:52px;width:auto;display:block}
+    h1{font-size:20px;margin:0}
+    .sub{color:var(--muted);margin-top:4px;font-size:13px}
+    .actions{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
+    }
+    .btn{
+      border:none;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:700;
+      background:var(--accent);color:#fff;
+    }
+    .btn.secondary{background:#111827}
+    .btn.ghost{background:#fff;color:#111827;border:1px solid var(--border)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .card{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:14px;
+      background:#fff;
+    }
+    .section-title{
+      font-weight:800;margin-bottom:10px;display:flex;gap:8px;align-items:center;
+    }
+    .pill{
+      font-size:12px;background:#f2f4f7;border:1px solid var(--border);
+      padding:2px 8px;border-radius:999px;color:#344054;font-weight:700;
+    }
+    label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 10px;
+      font-size:14px;
+      outline:none;
+    }
+    textarea{min-height:44px;resize:vertical}
+    .small{font-size:12px;color:var(--muted);margin-top:6px}
+    .span-12{grid-column:span 12}
+    .span-6{grid-column:span 6}
+    .span-4{grid-column:span 4}
+    .span-3{grid-column:span 3}
+    .span-2{grid-column:span 2}
+    @media (max-width:900px){
+      .span-6,.span-4,.span-3,.span-2{grid-column:span 12}
+    }
+    .checkrow{display:flex;gap:14px;flex-wrap:wrap}
+    .checkrow label{font-weight:600;margin:0;display:flex;align-items:center;gap:8px}
+    .table-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th, td{border:1px solid var(--border);padding:8px;font-size:13px;text-align:left}
+    th{background:#f9fafb}
+    .divider{height:1px;background:var(--border);margin:14px 0}
+    .sig-wrap{
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+    }
+    canvas{
+      width:100%;
+      height:160px;
+      border:1px dashed #cbd5e1;
+      border-radius:10px;
+      display:block;
+      touch-action:none; /* important pour dessiner au doigt */
+      background:#fff;
+    }
+    .rgpd{
+      font-size:12px;color:#344054;line-height:1.35;
+      background:#f9fafb;border:1px solid var(--border);
+      border-radius:12px;padding:12px;
+    }
+    .req{color:var(--accent);font-weight:900}
+/ Adaptation téléphone /
+@media (max-width: 768px) {
+body {
+padding: 10px;
+}
+
+.container {
+max-width: 100%;
+margin: 0;
+padding: 14px;
+border-radius: 10px;
+}
+
+.header {
+flex-direction: column;
+align-items: flex-start;
+}
+
+.brand {
+min-width: auto;
+width: 100%;
+}
+
+.actions {
+width: 100%;
+flex-direction: column;
+align-items: stretch;
+}
+
+.btn,
+.btn.secondary,
+.btn.ghost {
+width: 100%;
+}
+
+.grid {
+grid-template-columns: 1fr !important;
+}
+
+.span-12,
+.span-8,
+.span-6,
+.span-4,
+.span-3,
+.span-2 {
+grid-column: span 1 !important;
+}
+
+input,
+select,
+textarea {
+font-size: 16px;
+}
+
+canvas {
+height: 220px;
+}
+
+table {
+display: block;
+overflow-x: auto;
+white-space: nowrap;
+}
+}
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="brand">
+        <!-- Logo fixe (doit être dans le même dossier que le HTML) -->
+        <img id="logoImg" src="logo-jobconcept.png" alt="JOB CONCEPT" />
+        <div>
+          <h1>JOB CONCEPT — Dossier d'inscription intérimaire</h1>
+          <div class="sub">Formulaire en ligne → Génération PDF automatique (pièces + signature)</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" type="button" onclick="clearAll()">Réinitialiser</button>
+        <button class="btn secondary" type="button" onclick="clearSignature()">Effacer la signature</button>
+        <button class="btn" type="button" onclick="generatePDF()">Générer le PDF</button>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- IDENTITÉ -->
+      <div class="card span-12">
+        <div class="section-title">Identité <span class="pill">Obligatoire</span></div>
+        <div class="grid">
+          <div class="span-4">
+            <label>Nom <span class="req">*</span></label>
+            <input id="nom" required />
+          </div>
+          <div class="span-4">
+            <label>Prénom <span class="req">*</span></label>
+            <input id="prenom" required />
+          </div>
+          <div class="span-4">
+            <label>Date de naissance <span class="req">*</span></label>
+            <input id="naissance" type="date" required />
+          </div>
+
+          <div class="span-6">
+            <label>Numéro de Sécurité Sociale</label>
+            <input id="secu" placeholder="15 chiffres (si disponible)" />
+            <div class="small">Tu peux laisser libre (certains formats contiennent des espaces).</div>
+          </div>
+          <div class="span-3">
+            <label>Téléphone <span class="req">*</span></label>
+            <input id="tel" placeholder="06..." required />
+          </div>
+          <div class="span-3">
+            <label>Email <span class="req">*</span></label>
+            <input id="email" type="email" placeholder="ex@domaine.com" required />
+          </div>
+
+          <div class="span-12">
+            <label>Adresse complète <span class="req">*</span></label>
+            <textarea id="adresse" placeholder="N°, rue, code postal, ville" required></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTEUR -->
+      <div class="card span-12">
+        <div class="section-title">Secteur d’activité recherché <span class="pill">Comme ton PDF</span></div>
+        <div class="grid">
+          <div class="span-6">
+            <label>Choix</label>
+            <div class="checkrow">
+              <label><input type="checkbox" id="sect_industrie"> Industrie</label>
+              <label><input type="checkbox" id="sect_btp"> BTP</label>
+              <label><input type="checkbox" id="sect_log"> Logistique</label>
+              <label><input type="checkbox" id="sect_tert"> Tertiaire</label>
+            </div>
+          </div>
+          <div class="span-6">
+            <label>Autres (préciser)</label>
+            <input id="sect_autres" placeholder="Ex: agroalimentaire, nettoyage..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- PERMIS / MOBILITÉ -->
+      <div class="card span-12">
+        <div class="section-title">Permis & Mobilité <span class="pill">Comme ton PDF</span></div>
+        <div class="grid">
+          <div class="span-4">
+            <label>Permis</label>
+            <div class="checkrow">
+              <label><input type="checkbox" id="perm_b"> B</label>
+              <label><input type="checkbox" id="perm_c"> C</label>
+              <label><input type="checkbox" id="perm_ce"> CE</label>
+            </div>
+          </div>
+          <div class="span-4">
+            <label>Autres permis (préciser)</label>
+            <input id="perm_autres" />
+          </div>
+          <div class="span-4">
+            <label>Moyen de transport</label>
+            <select id="transport">
+              <option value="">—</option>
+              <option>Véhicule personnel</option>
+              <option>Transports</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div class="span-12">
+            <label>Disponibilité</label>
+            <input id="dispo" placeholder="Immédiate / à partir du ../../.. / jours..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- VM -->
+      <div class="card span-12">
+        <div class="section-title">Visite médicale (VM) <span class="pill">Demandée</span></div>
+        <div class="grid">
+          <div class="span-4">
+            <label>Dernière VM</label>
+            <input id="vm_date" type="date" />
+          </div>
+          <div class="span-4">
+            <label>Expiration VM</label>
+            <input id="vm_exp" type="date" />
+          </div>
+          <div class="span-4">
+            <label>Centre / organisme (optionnel)</label>
+            <input id="vm_centre" placeholder="Nom du centre" />
+          </div>
+        </div>
+      </div>
+
+      <!-- CACES -->
+      <div class="card span-12">
+        <div class="section-title">CACES <span class="pill">Tableau multi-lignes</span></div>
+        <div class="small">Ajoute autant de lignes que nécessaire (ex: R489 https://mibc-fr-11.mailinblack.com/securelink/?url=http://cat.1A&key=eyJsYW5nIjoiRlIiLCJ1cmwiOiJodHRwOi8vY2F0LjFBLzMvNSIsInRva2VuIjoiZ0FBQUFBQnBqdS1veTlTYVgxY01oNEdQUWJZSnAwbkFsV3hiZTlCR3hFWkYza2RuWS1CUl80NHBnc2FBM2NZdXJoUDlSWk02LTNDbERXR3FwWVdQNlJXQ01GYmFqWW1QV2NVUlhuTS1HQUJHRjVwU24wUElkWU5UclpGSW82N3AyRTZ1VVlvbnhrd3lPM0x6UllQYkZNUnRPYmwzYTBjTzBBZmtFbzI5MTlKblpYbG9rTTJ2VTlxTnBRMzI4aW5MejY4eHg0ZzNuMkFTR29UYXphQUttV3hHOVFuUjUweHVRYmNBc05MRl9JUmNXV0pSWFpZc3BzbF9vRUNvNTgyOUtxZWR5aFZHMjNKOEcyRTU4Wk0wRFFGREx6UnJFNC1CWUJzY3NkSzVJbVE1b1AtMXRuNm40ODFvQkRzb3hJUjI5V3F5VGRBYXYtY24ifQ==, R486 cat.A/B...)</div>
+
+        <div class="grid" style="margin-top:10px">
+          <div class="span-4">
+            <label>Type (ex : R489)</label>
+            <input id="cType" />
+          </div>
+          <div class="span-4">
+            <label>Catégorie(s)</label>
+            <input id="cCat" placeholder="ex: 1A, 3, 5" />
+          </div>
+          <div class="span-2">
+            <label>Date obtention</label>
+            <input id="cObt" type="date" />
+          </div>
+          <div class="span-2">
+            <label>Validité</label>
+            <input id="cVal" type="date" />
+          </div>
+        </div>
+
+        <div class="table-actions">
+          <button class="btn" type="button" onclick="addCacesRow()">+ Ajouter une ligne</button>
+          <button class="btn ghost" type="button" onclick="removeLastCacesRow()">— Supprimer la dernière</button>
+        </div>
+
+        <table id="cacesTable">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Catégorie(s)</th>
+              <th>Date d'obtention</th>
+              <th>Date de validité</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- HABILITATIONS -->
+      <div class="card span-12">
+        <div class="section-title">Habilitations <span class="pill">Tableau multi-lignes</span></div>
+        <div class="small">Ex : H0B0, B1V, SST, ATEX, Travail en hauteur, Échafaudage...</div>
+
+        <div class="grid" style="margin-top:10px">
+          <div class="span-6">
+            <label>Nom habilitation</label>
+            <input id="hNom" placeholder="Ex: H0B0 / SST / ATEX..." />
+          </div>
+          <div class="span-3">
+            <label>Date obtention</label>
+            <input id="hObt" type="date" />
+          </div>
+          <div class="span-3">
+            <label>Date validité</label>
+            <input id="hVal" type="date" />
+          </div>
+        </div>
+
+        <div class="table-actions">
+          <button class="btn" type="button" onclick="addHabRow()">+ Ajouter une ligne</button>
+          <button class="btn ghost" type="button" onclick="removeLastHabRow()">— Supprimer la dernière</button>
+        </div>
+
+        <table id="habTable">
+          <thead>
+            <tr>
+              <th>Habilitation</th>
+              <th>Date d'obtention</th>
+              <th>Date de validité</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- CARTE BTP -->
+      <div class="card span-12">
+        <div class="section-title">Carte BTP <span class="pill">Demandée</span></div>
+        <div class="grid">
+          <div class="span-6">
+            <label>Numéro de carte</label>
+            <input id="btp_num" placeholder="Si concerné" />
+          </div>
+          <div class="span-6">
+            <label>Date de validité / expiration</label>
+            <input id="btp_val" type="date" />
+          </div>
+        </div>
+      </div>
+
+      <!-- URGENCE -->
+      <div class="card span-12">
+        <div class="section-title">Personne à contacter en cas d’urgence <span class="pill">Obligatoire</span></div>
+        <div class="grid">
+          <div class="span-6">
+            <label>Nom <span class="req">*</span></label>
+            <input id="urg_nom" required />
+          </div>
+          <div class="span-6">
+            <label>Téléphone <span class="req">*</span></label>
+            <input id="urg_tel" required />
+          </div>
+        </div>
+      </div>
+
+      <!-- RQTH -->
+      <div class="card span-12">
+        <div class="section-title">RQTH <span class="pill">Comme ton PDF</span></div>
+        <div class="grid">
+          <div class="span-4">
+            <label>RQTH</label>
+            <div class="checkrow">
+              <label><input type="radio" name="rqth" id="rqth_oui" value="Oui"> Oui</label>
+              <label><input type="radio" name="rqth" id="rqth_non" value="Non"> Non</label>
+            </div>
+          </div>
+          <div class="span-8">
+            <label>Aménagements / précisions (optionnel)</label>
+            <input id="rqth_prec" placeholder="Si nécessaire..." />
+          </div>
+        </div>
+      </div>
+
+     <!-- DOCUMENTS A ENVOYER PAR EMAIL -->
+
+<div class="card span-12">
+<div class="section-title">
+Documents à envoyer par email
+<span class="pill">Obligatoire</span>
+</div>
+
+<div class="small" style="margin-bottom:15px">
+Après avoir généré votre dossier d'inscription en PDF, merci d'envoyer par email le PDF généré ainsi que les documents ci-dessous à l'agence.
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px;font-weight:600">
+<label><input type="checkbox"> Pièce d'identité (CNI / Passeport)</label>
+<label><input type="checkbox"> RIB</label>
+<label><input type="checkbox"> Permis de conduire</label>
+<label><input type="checkbox"> Justificatifs CACES</label>
+<label><input type="checkbox"> Visite médicale</label>
+<label><input type="checkbox"> Justificatif de domicile</label>
+<label><input type="checkbox"> Documents de conduite (CQC / FIMO)</label>
+</div>
+
+<div style="margin-top:15px;background:#f3f4f6;padding:12px;border-radius:8px">
+
+<b>Instructions :</b><br><br>
+
+1. Générer votre dossier d'inscription en PDF<br>
+2. Joindre le PDF généré<br>
+3. Joindre les documents cochés ci-dessus<br>
+4. Envoyer le tout par email à : stpierre@jobconcept.fr
+
+</div>
+      <!-- RGPD -->
+      <div class="card span-12">
+        <div class="section-title">RGPD <span class="pill">Obligatoire</span></div>
+        <div class="rgpd">
+          En soumettant ce formulaire, j’accepte que mes données soient utilisées par JOB CONCEPT pour la gestion de mon inscription,
+          l’affectation aux missions et les obligations légales associées. Je peux exercer mes droits (accès, rectification, suppression,
+          limitation) en contactant l’agence.
+          <div style="margin-top:10px">
+            <label style="display:flex;gap:10px;align-items:center;font-weight:800">
+              <input id="rgpd_ok" type="checkbox" />
+              J’ai lu et j’accepte le traitement de mes données. <span class="req">*</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SIGNATURE (SOUS RGPD) -->
+        <div class="section-title">Signature électronique <span class="pill">Obligatoire</span></div>
+        <div class="sig-wrap">
+          <div class="small" style="margin-bottom:8px">Signe avec la souris (ordinateur) ou au doigt (téléphone/tablette).</div>
+          <canvas id="sigCanvas" width="900" height="320"></canvas>
+          <div class="small">Si ça ne dessine pas : clique dans la zone et maintiens le clic en bougeant la souris.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // -------------------------
+  // Helpers
+  // -------------------------
+  function val(id){ return document.getElementById(id).value?.trim() || ""; }
+  function checked(id){ return document.getElementById(id).checked; }
+  function filesNames(inputId){
+    const el = document.getElementById(inputId);
+    if(!el || !el.files || el.files.length===0) return [];
+    return Array.from(el.files).map(f => f.name);
+  }
+
+  // -------------------------
+  // CACES multi-lignes
+  // -------------------------
+  const cacesBody = document.querySelector("#cacesTable tbody");
+  function addCacesRow(){
+    const type = val("cType");
+    const cat  = val("cCat");
+    const obt  = document.getElementById("cObt").value;
+    const vld  = document.getElementById("cVal").value;
+
+    if(!type && !cat && !obt && !vld){
+      alert("Renseigne au moins un champ CACES avant d’ajouter la ligne.");
+      return;
+    }
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(type) || "—"}</td>
+      <td>${escapeHtml(cat)  || "—"}</td>
+      <td>${escapeHtml(obt)  || "—"}</td>
+      <td>${escapeHtml(vld)  || "—"}</td>
+    `;
+    cacesBody.appendChild(tr);
+
+    document.getElementById("cType").value="";
+    document.getElementById("cCat").value="";
+    document.getElementById("cObt").value="";
+    document.getElementById("cVal").value="";
+  }
+  function removeLastCacesRow(){
+    const rows = cacesBody.querySelectorAll("tr");
+    if(rows.length===0) return;
+    cacesBody.removeChild(rows[rows.length-1]);
+  }
+  function getCacesRows(){
+    const rows = [];
+    cacesBody.querySelectorAll("tr").forEach(tr=>{
+      const tds = tr.querySelectorAll("td");
+      rows.push([tds[0].innerText, tds[1].innerText, tds[2].innerText, tds[3].innerText]);
+    });
+    return rows;
+  }
+
+  // -------------------------
+  // Habilitations multi-lignes
+  // -------------------------
+  const habBody = document.querySelector("#habTable tbody");
+  function addHabRow(){
+    const nom = val("hNom");
+    const obt = document.getElementById("hObt").value;
+    const vld = document.getElementById("hVal").value;
+
+    if(!nom && !obt && !vld){
+      alert("Renseigne au moins un champ Habilitation avant d’ajouter la ligne.");
+      return;
+    }
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(nom) || "—"}</td>
+      <td>${escapeHtml(obt) || "—"}</td>
+      <td>${escapeHtml(vld) || "—"}</td>
+    `;
+    habBody.appendChild(tr);
+
+    document.getElementById("hNom").value="";
+    document.getElementById("hObt").value="";
+    document.getElementById("hVal").value="";
+  }
+  function removeLastHabRow(){
+    const rows = habBody.querySelectorAll("tr");
+    if(rows.length===0) return;
+    habBody.removeChild(rows[rows.length-1]);
+  }
+  function getHabRows(){
+    const rows = [];
+    habBody.querySelectorAll("tr").forEach(tr=>{
+      const tds = tr.querySelectorAll("td");
+      rows.push([tds[0].innerText, tds[1].innerText, tds[2].innerText]);
+    });
+    return rows;
+  }
+
+  // -------------------------
+  // Signature (souris + doigt)
+  // -------------------------
+  const canvas = document.getElementById("sigCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#111827";
+
+  let drawing = false;
+  let hasSignature = false;
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (clientX - rect.left) * (canvas.width / rect.width),
+      y: (clientY - rect.top)  * (canvas.height / rect.height)
+    };
+  }
+
+  function startDraw(e){
+    e.preventDefault();
+    drawing = true;
+    const p = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+  function draw(e){
+    if(!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    hasSignature = true;
+  }
+  function endDraw(e){
+    drawing = false;
+  }
+
+  // Mouse
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", draw);
+  window.addEventListener("mouseup", endDraw);
+
+  // Touch
+  canvas.addEventListener("touchstart", startDraw, {passive:false});
+  canvas.addEventListener("touchmove", draw, {passive:false});
+  window.addEventListener("touchend", endDraw);
+
+function clearSignature(){
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+hasSignature = false;
+ctx.beginPath();
+}
+  // -------------------------
+  // Reset
+  // -------------------------
+function clearAll(){
+    if(!confirm("Réinitialiser tous les champs ?")) return;
+    document.querySelectorAll("input, textarea, select").forEach(el=>{
+      if(el.type==="checkbox" || el.type==="radio") el.checked = false;
+      else if(el.type==="file") el.value = "";
+      else el.value = "";
+    });
+    cacesBody.innerHTML = "";
+    habBody.innerHTML = "";
+    clearSignature();
+  }
+
+  // -------------------------
+  // PDF generation
+  // -------------------------
+  async function getLogoDataURL(){
+    const img = document.getElementById("logoImg");
+    try{
+      if(!img.complete) await new Promise(res => img.onload = res);
+      const off = document.createElement("canvas");
+      off.width = img.naturalWidth;
+      off.height = img.naturalHeight;
+      const octx = off.getContext("2d");
+      octx.drawImage(img, 0, 0);
+      return off.toDataURL("image/png");
+    }catch(e){
+      return null;
+    }
+  }
+
+  function generatePDF(){
+    // validations minimum
+    if(!val("nom") || !val("prenom") || !document.getElementById("naissance").value || !val("tel") || !val("email") || !val("adresse")
+       || !val("urg_nom") || !val("urg_tel")){
+      alert("Il manque des champs obligatoires (Identité / Contact urgence).");
+      return;
+    }
+    if(!document.getElementById("rgpd_ok").checked){
+      alert("Merci de cocher la case RGPD.");
+      return;
+    }
+    if(!hasSignature){
+      alert("Merci de signer dans la zone de signature.");
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:"mm", format:"a4" });
+
+    // Header
+    (async ()=>{
+      const logoData = await getLogoDataURL();
+      let y = 12;
+
+      if(logoData){
+        try{
+          doc.addImage(logoData, "PNG", 12, 10, 28, 16);
+        }catch(e){}
+      }
+      doc.setFont("helvetica","bold");
+      doc.setFontSize(14);
+      doc.text("JOB CONCEPT — Dossier d'inscription intérimaire", 44, 16);
+      doc.setFont("helvetica","normal");
+      doc.setFontSize(10);
+      doc.text("Généré depuis le formulaire en ligne", 44, 22);
+
+      y = 30;
+      doc.setDrawColor(230,232,236);
+      doc.line(12, y, 198, y);
+      y += 6;
+
+      // Identité
+      doc.setFont("helvetica","bold"); doc.setFontSize(12);
+      doc.text("Identité", 12, y); y += 6;
+      doc.setFont("helvetica","normal"); doc.setFontSize(10);
+
+      const identLines = [
+        `Nom : ${val("nom")}`,
+        `Prénom : ${val("prenom")}`,
+        `Date de naissance : ${document.getElementById("naissance").value || "—"}`,
+        `N° Sécurité sociale : ${val("secu") || "—"}`,
+        `Téléphone : ${val("tel")}`,
+        `Email : ${val("email")}`,
+        `Adresse : ${val("adresse")}`
+      ];
+      y = writeLines(doc, identLines, 12, y);
+
+      // Secteur
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("Secteur d’activité recherché", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      const secteurs = [];
+      if(checked("sect_industrie")) secteurs.push("Industrie");
+      if(checked("sect_btp")) secteurs.push("BTP");
+      if(checked("sect_log")) secteurs.push("Logistique");
+      if(checked("sect_tert")) secteurs.push("Tertiaire");
+      if(val("sect_autres")) secteurs.push(`Autres: ${val("sect_autres")}`);
+      y = writeLines(doc, [`Choix : ${secteurs.length?secteurs.join(", "):"—"}`], 12, y);
+
+      // Permis/Mobilité
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("Permis & Mobilité", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      const perms = [];
+      if(checked("perm_b")) perms.push("B");
+      if(checked("perm_c")) perms.push("C");
+      if(checked("perm_ce")) perms.push("CE");
+      if(val("perm_autres")) perms.push(`Autres: ${val("perm_autres")}`);
+      y = writeLines(doc, [
+        `Permis : ${perms.length?perms.join(", "):"—"}`,
+        `Moyen de transport : ${document.getElementById("transport").value || "—"}`,
+        `Disponibilité : ${val("dispo") || "—"}`
+      ], 12, y);
+
+      // VM
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("Visite médicale (VM)", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      y = writeLines(doc, [
+        `Dernière VM : ${document.getElementById("vm_date").value || "—"}`,
+        `Expiration VM : ${document.getElementById("vm_exp").value || "—"}`,
+        `Centre : ${val("vm_centre") || "—"}`
+      ], 12, y);
+
+      // CACES table
+      y += 3;
+      doc.setFont("helvetica","bold"); doc.text("CACES", 12, y); y += 2;
+      const cacesRows = getCacesRows();
+      doc.autoTable({
+        startY: y,
+        head: [["Type","Catégorie(s)","Date obtention","Date validité"]],
+        body: cacesRows.length ? cacesRows : [["—","—","—","—"]],
+        theme: "grid",
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [249,250,251], textColor:[16,24,40] },
+        margin: { left: 12, right: 12 }
+      });
+      y = doc.lastAutoTable.finalY + 6;
+
+      // Habilitations table
+      doc.setFont("helvetica","bold"); doc.text("Habilitations", 12, y); y += 2;
+      const habRows = getHabRows();
+      doc.autoTable({
+        startY: y,
+        head: [["Habilitation","Date obtention","Date validité"]],
+        body: habRows.length ? habRows : [["—","—","—"]],
+        theme: "grid",
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [249,250,251], textColor:[16,24,40] },
+        margin: { left: 12, right: 12 }
+      });
+      y = doc.lastAutoTable.finalY + 6;
+
+      // Carte BTP
+      doc.setFont("helvetica","bold"); doc.text("Carte BTP", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      y = writeLines(doc, [
+        `Numéro : ${val("btp_num") || "—"}`,
+        `Validité : ${document.getElementById("btp_val").value || "—"}`
+      ], 12, y);
+
+      // Urgence + RQTH
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("Contact urgence", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      y = writeLines(doc, [
+        `Nom : ${val("urg_nom")}`,
+        `Téléphone : ${val("urg_tel")}`
+      ], 12, y);
+
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("RQTH", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      const rqthVal = document.getElementById("rqth_oui").checked ? "Oui" :
+                      document.getElementById("rqth_non").checked ? "Non" : "—";
+      y = writeLines(doc, [
+        `RQTH : ${rqthVal}`,
+        `Aménagements / précisions : ${val("rqth_prec") || "—"}`
+      ], 12, y);
+
+      // Pièces jointes (liste)
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("Pièces jointes (noms de fichiers)", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      const pieces = [
+        ["Pièce d'identité", filesNames("up_id")],
+        ["RIB", filesNames("up_rib")],
+        ["Permis", filesNames("up_permis")],
+        ["Justificatifs CACES", filesNames("up_caces")],
+        ["Visite médicale", filesNames("up_vm")],
+        ["Justificatif domicile", filesNames("up_dom")],
+        ["Documents conduite (CQC/FIMO)", filesNames("up_conduite")]
+      ];
+      pieces.forEach(([label, arr])=>{
+        const line = `${label} : ${arr.length?arr.join(", "):"—"}`;
+        y = writeLines(doc, [line], 12, y);
+      });
+
+      // RGPD + signature dessous
+      y += 2;
+      doc.setFont("helvetica","bold"); doc.text("RGPD", 12, y); y += 6;
+      doc.setFont("helvetica","normal");
+      y = writeLines(doc, [
+        "Acceptation RGPD cochée : OUI",
+        "Texte : J’accepte que mes données soient utilisées par JOB CONCEPT pour la gestion de mon inscription, l’affectation aux missions et obligations légales."
+      ], 12, y);
+
+      // Signature image
+      y += 4;
+      doc.setFont("helvetica","bold"); doc.text("Signature électronique", 12, y); y += 4;
+
+      const sigData = canvas.toDataURL("image/png");
+      if(y > 250){ doc.addPage(); y = 20; }
+      doc.addImage(sigData, "PNG", 12, y, 90, 32);
+
+      doc.save(`Dossier_Inscription_${val("nom")}_${val("prenom")}.pdf`);
+    })();
+  }
+
+  function writeLines(doc, lines, x, y){
+    const maxWidth = 186;
+    const lineHeight = 5;
+    for(const l of lines){
+      const split = doc.splitTextToSize(l, maxWidth);
+      for(const s of split){
+        if(y > 280){ doc.addPage(); y = 20; }
+        doc.text(s, x, y);
+        y += lineHeight;
+      }
+    }
+    return y;
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+</script>
+</body>
+</html>
