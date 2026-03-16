@@ -96,8 +96,9 @@
     @media (max-width:900px){
       .span-6,.span-4,.span-3,.span-2{grid-column:span 12}
     }
-    .checkrow{display:flex;gap:14px;flex-wrap:wrap}
-    .checkrow label{font-weight:600;margin:0;display:flex;align-items:center;gap:8px}
+    .checkrow{display:flex;flex-direction:column;gap:10px}
+.checkrow label{font-weight:600;display:flex;align-items:center;gap:10px}
+.checkrow input{width:auto}
     .table-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     table{width:100%;border-collapse:collapse;margin-top:10px}
     th, td{border:1px solid var(--border);padding:8px;font-size:13px;text-align:left}
